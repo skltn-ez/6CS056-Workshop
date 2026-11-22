@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Training Institute')</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; color: #222; }
+        header { background: #172554; color: white; padding: 18px 8%; }
+        header a { color: white; text-decoration: none; margin-right: 20px; }
+        main { max-width: 1000px; margin: 35px auto; padding: 25px; background: white; border-radius: 8px; }
+        h1 { color: #172554; }
+        a, button { cursor: pointer; }
+        .btn { display: inline-block; padding: 9px 14px; background: #2563eb; color: white; border: 0; border-radius: 5px; text-decoration: none; }
+        .danger { background: #dc2626; }
+        .secondary { background: #64748b; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #eff6ff; }
+        input, textarea, select { display: block; width: 100%; padding: 10px; margin: 7px 0 16px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        label { font-weight: bold; }
+        .success { background: #dcfce7; padding: 12px; margin-bottom: 15px; }
+        .error { color: #dc2626; }
+        form.inline { display: inline; }
+    </style>
+</head>
+<body>
+<header>
+    <strong>Training Institute Management</strong>
+    <nav style="margin-top:12px">
+        <a href="{{ route('students.index') }}">Students</a>
+        <a href="{{ route('courses.index') }}">Courses</a>
+    </nav>
+</header>
+<main>
+    @if(session('success'))
+        <div class="success">{{ session('success') }}</div>
+    @endif
+    @yield('content')
+</main>
+</body>
+</html>
