@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
     public function index()
     {
         $students = Student::latest()->paginate(10);
+
         return view('students.index', compact('students'));
     }
 
@@ -20,13 +22,7 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:students,email',
-            'phone' => 'required|string|max:20',
-            'address' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
-        ]);
+        $validated = $request->validate($this->rules());
 
         Student::create($validated);
 
@@ -46,13 +42,7 @@ class StudentController extends Controller
 
     public function update(Request $request, Student $student)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:students,email,' . $student->id,
-            'phone' => 'required|string|max:20',
-            'address' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
-        ]);
+        $validated = $request->validate($this->rules($student));
 
         $student->update($validated);
 
@@ -66,5 +56,20 @@ class StudentController extends Controller
 
         return redirect()->route('students.index')
             ->with('success', 'Student deleted successfully.');
+    }
+
+    private function rules(?Student $student = null): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('students', 'email')->ignore($student?->id),
+            ],
+            'phone' => ['required', 'string', 'max:20'],
+            'address' => ['nullable', 'string'],
+            'date_of_birth' => ['nullable', 'date'],
+        ];
     }
 }

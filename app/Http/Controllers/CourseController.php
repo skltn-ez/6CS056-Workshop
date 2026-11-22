@@ -10,6 +10,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::latest()->paginate(10);
+
         return view('courses.index', compact('courses'));
     }
 
@@ -20,14 +21,7 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'duration' => 'required|integer|min:1',
-            'fee' => 'required|numeric|min:0',
-            'difficulty' => 'required|in:Easy,Medium,Hard',
-            'is_active' => 'required|boolean',
-        ]);
+        $validated = $request->validate($this->rules());
 
         Course::create($validated);
 
@@ -47,14 +41,7 @@ class CourseController extends Controller
 
     public function update(Request $request, Course $course)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'duration' => 'required|integer|min:1',
-            'fee' => 'required|numeric|min:0',
-            'difficulty' => 'required|in:Easy,Medium,Hard',
-            'is_active' => 'required|boolean',
-        ]);
+        $validated = $request->validate($this->rules());
 
         $course->update($validated);
 
@@ -68,5 +55,17 @@ class CourseController extends Controller
 
         return redirect()->route('courses.index')
             ->with('success', 'Course deleted successfully.');
+    }
+
+    private function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'duration' => ['required', 'integer', 'min:1'],
+            'fee' => ['required', 'numeric', 'min:0'],
+            'difficulty' => ['required', 'in:Easy,Medium,Hard'],
+            'is_active' => ['required', 'boolean'],
+        ];
     }
 }
